@@ -5,7 +5,7 @@ export const getNumberOfDaysInMonth = (year, month) => {
 }
 
 export const getSortedDays = (year, month) => {
-    const dayIndex = getNumberOfDaysInMonth(year, month)
+    const dayIndex = new Date(year, month, 1).getDay()
     const firstHalf = dayNames.slice(dayIndex)
     return [...firstHalf, ...dayNames.slice(0, dayIndex)]
 }
@@ -16,6 +16,6 @@ export const range = (start, end) => {
     const { result } = Array.from({ length }).reduce(({ result, current }) => ({
         result: [...result, current],
         current: current + 1
-    }), { result: [], current: 0 })
+    }), { result: [], current: start })
     return result
 }
