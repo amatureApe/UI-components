@@ -5,6 +5,12 @@ export const PickWrapper = styled.div`
     border-radius: 7px;
 
     width: 500px;
+
+    button {
+        border: none;
+        outline: none;
+        background: none;
+    }
 `
 export const Header = styled.div`
     display: flex;
@@ -29,6 +35,7 @@ export const Body = styled.div`
 export const SevenColGrid = styled.div`
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+    row-gap: 10px;
 
     ${({ heading }) => heading && css`
         font-weight: bold;
@@ -36,5 +43,17 @@ export const SevenColGrid = styled.div`
 
     .active {
         border: 1px solid green;
+        border-radius: 10px;
+        height: 100%;
+    }
+
+    p {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    button: disabled {
+        text-decoration: line-through;
     }
 `

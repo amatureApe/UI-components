@@ -5,7 +5,7 @@ import DatePicker from './components/DatePicker/index.js';
 function App() {
   return (
     <div className="App">
-      <DatePicker />
+      <DatePicker minDate={new Date(2022, 5, 22)} maxDate={new Date(2022, 10, 22)} />
     </div>
   );
 }
