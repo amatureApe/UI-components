@@ -18,6 +18,7 @@ export const Header = styled.div`
 
     ion-icon {
         cursor: pointer;
+        font-size: 1.5rem;
     }
 `
 
@@ -32,4 +33,8 @@ export const SevenColGrid = styled.div`
     ${({ heading }) => heading && css`
         font-weight: bold;
     `}
+
+    .active {
+        border: 1px solid green;
+    }
 `
