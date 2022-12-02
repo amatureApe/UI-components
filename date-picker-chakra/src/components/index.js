@@ -1,15 +1,22 @@
-import React, { useState } from 'react'
-import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer } from '@chakra-ui/react'
+import React, { useDebugValue, useState } from 'react'
+import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer, Collapse, useDisclosure } from '@chakra-ui/react'
 import { monthNames } from '../consts'
 import { getNumberOfDaysInMonth, getSortedDays, range } from '../utils'
-import { ChevronLeftIcon, ChevronRightIcon, TimeIcon } from '@chakra-ui/icons'
+import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowedIcon } from '@chakra-ui/icons'
 
 const DatePicker = ({ minDate, maxDate }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
     const [currentDay, setCurrentDay] = useState(new Date().getDate())
-    const [selectedDate, setSelectedDate] = useState(null)
+    const [selectedDate, setSelectedDate] = useState(new Date())
     const [timestamp, setTimestamp] = useState(Date.now())
+    const [converterTime, setConverterTime] = useState(new Date(Date.now()).toLocaleDateString())
+    const [converterInputVal, setConverterInputVal] = useState("")
+
+    const {
+        isOpen: isOpenConverter,
+        onToggle: onToggleConverter
+    } = useDisclosure()
 
     const nextMonth = () => {
         if (currentMonth < 11) {
@@ -38,21 +45,39 @@ const DatePicker = ({ minDate, maxDate }) => {
         setTimestamp(Date.UTC(currentYear, currentMonth, day, 0))
     }
 
+    const handleConverterTime = (event) => {
+        let time = event.target.value
+        setConverterTime(Number(time))
+        setConverterInputVal(time)
+    }
+
+    const handleConverterReset = () => {
+        setConverterTime(Date.now())
+        setConverterInputVal("")
+    }
+
+    const handleDateReset = () => {
+        setSelectedDate(new Date())
+        setTimestamp(Date.now())
+        setCurrentMonth(new Date().getMonth())
+        setCurrentYear(new Date().getFullYear())
+    }
+
     const getTimeFromState = (day) => {
         return new Date(currentYear, currentMonth, day).getTime()
     }
 
-    console.log(Date.now())
+    console.log("PING", new Date(converterTime).toLocaleDateString())
 
     return (
         <Box borderRadius={10} w={500} bg="rgba(255, 73, 147, 0.2)" p={5}>
             <Box p={5} bg="#202023" borderRadius={10}>
                 <Stack direction="row" justify="space-between" mb={4}>
-                    <Button size="sm" color="#FF4993">
+                    <Button size="sm" color="#FF4993" onClick={prevMonth}>
                         <ChevronLeftIcon />
                     </Button>
                     <Heading>{monthNames[currentMonth]} {currentYear}</Heading>
-                    <Button size="sm" color="#FF4993">
+                    <Button size="sm" color="#FF4993" onClick={nextMonth}>
                         <ChevronRightIcon />
                     </Button>
                 </Stack>
@@ -66,43 +91,70 @@ const DatePicker = ({ minDate, maxDate }) => {
                     </Grid>
                 </Box>
                 <Divider bg="#FF4993" mt={3} />
-                <Box px={5} pt={2} pb={5}>
-                    <Stack direction="row" justify="center" align="center" mb={2}>
-                        <Text ml={10} fontSize={14} bg="pink.800" borderRadius={10} p={0.5}>{timestamp}</Text>
-                        <Button size="sm" variant="ghost" _hover={{ bg: "pink.800" }} onClick={() => setTimestamp(Date.now())}>!</Button>
+                <Box px={5} pt={2} mb={4}>
+                    <Stack direction="row" justify="space-between" align="center" mb={2}>
+                        <Stack direction="row" align="center" justify="center">
+                            <Text fontSize={14} bg="pink.800" borderRadius={10} p={1}>{timestamp}</Text>
+                            <Button px={1} pb={0.5} borderRadius={100} size="sm" variant="ghost" _hover={{ bg: "pink.800", cursor: "pointer" }} onClick={handleDateReset}><RepeatClockIcon /></Button>
+                        </Stack>
+                        <Stack>
+                            <Text>{selectedDate.toLocaleDateString()}</Text>
+                        </Stack>
                     </Stack>
                     <Grid templateColumns='repeat(7, 1fr)' gap={2} justifyItems="center">
-                        {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map((day) => (
-                            <GridItem>
-                                <Button
-                                    color="whiteAlpha.900"
-                                    bg="#FF4993"
-                                    isActive={currentDay == day ? true : false}
-                                    _active={{
-                                        bg: 'pink.800',
-                                        transform: 'scale(1.15)',
-                                        borderWidth: "1px",
-                                        borderColor: '#FF4993',
-                                    }} size="sm" w={10} value={day} onClick={handleSelection}
-                                >
-                                    {day}
-                                </Button>
-                            </GridItem>
-                        ))}
+                        {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map((day) => {
+                            const month = currentMonth
+                            const year = currentYear
+                            return (
+                                <GridItem>
+                                    <Button
+                                        color="whiteAlpha.900"
+                                        bg="#FF4993"
+                                        _focus={{
+                                            bg: 'pink.800',
+                                            transform: 'scale(1.15)',
+                                            borderWidth: "1px",
+                                            borderColor: '#FF4993',
+                                        }} size="sm" w={10} value={day} onClick={handleSelection}
+                                    >
+                                        {day}
+                                    </Button>
+                                </GridItem>
+                            )
+                        })}
                         {range(getNumberOfDaysInMonth(currentYear, currentMonth), 34).map((day) => (
                             <GridItem>
                                 <Spacer />
                             </GridItem>
                         ))}
                         <GridItem>
-                            <Button bg="#FF4993" color="whiteAlpha.800" size="sm" w={10}>
+                            <Button bg="#FF4993" color="whiteAlpha.800" size="sm" w={10} onClick={onToggleConverter} isActive={isOpenConverter} _active={{
+                                bg: 'pink.800',
+                                transform: 'scale(1.15)',
+                                borderWidth: "1px",
+                                borderColor: '#FF4993',
+                            }}>
                                 <TimeIcon />
                             </Button>
                         </GridItem>
                     </Grid>
                 </Box>
+                <Box>
+                    <Collapse in={isOpenConverter} animateOpacity>
+                        <Divider bg="#FF4993" />
+                        <Stack direction="row" justify="space-between" align="center" color="#FF4993" pl={2} pr={6} mt={2.5}>
+                            <Stack direction="row" justify="center" align="center">
+                                <Button px={1} pb={0.5} borderRadius={10} size="sm" variant="ghost" _hover={{ bg: "pink.800", cursor: "pointer" }} onClick={handleConverterReset}><NotAllowedIcon /></Button>
+                                <Input bg="whiteAlpha.800" size="sm" color="#525252" my={2} _placeholder={{ color: "#525252" }} placeholder="Convert Epochs" value={converterInputVal} onChange={handleConverterTime} />
+                            </Stack>
+                            <Stack direction="row" justify="center" align="center">
+                                <Text fontSize={14}>{new Date(converterTime).toLocaleDateString()} {new Date(converterTime).toLocaleTimeString()}</Text>
+                            </Stack>
+                        </Stack>
+                    </Collapse>
+                </Box>
             </Box>
-        </Box>
+        </Box >
     )
 }
 
