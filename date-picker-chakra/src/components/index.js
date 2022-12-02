@@ -1,8 +1,8 @@
 import React, { useDebugValue, useState } from 'react'
-import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer, Collapse, useDisclosure } from '@chakra-ui/react'
+import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer, Collapse, Menu, MenuList, MenuItem, MenuButton, useDisclosure } from '@chakra-ui/react'
 import { monthNames } from '../consts'
 import { getNumberOfDaysInMonth, getSortedDays, range } from '../utils'
-import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowedIcon } from '@chakra-ui/icons'
+import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowedIcon, ChevronDownIcon } from '@chakra-ui/icons'
 
 const DatePicker = ({ minDate, maxDate }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
@@ -76,7 +76,32 @@ const DatePicker = ({ minDate, maxDate }) => {
                     <Button size="sm" color="#FF4993" onClick={prevMonth}>
                         <ChevronLeftIcon />
                     </Button>
-                    <Heading>{monthNames[currentMonth]} {currentYear}</Heading>
+                    <Stack direction="row" spacing={0}>
+                        <Menu>
+                            <MenuButton as={Button} variant="ghost">
+                                <Heading fontSize={28}>{monthNames[currentMonth]}</Heading>
+                            </MenuButton>
+                            <MenuList bg="#202023">
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Download</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Create a Copy</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Mark as Draft</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Delete</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Attend a Workshop</MenuItem>
+                            </MenuList>
+                        </Menu>
+                        <Menu>
+                            <MenuButton as={Button} variant="ghost">
+                                <Heading fontSize={28}>{currentYear}</Heading>
+                            </MenuButton>
+                            <MenuList bg="#202023">
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Download</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Create a Copy</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Mark as Draft</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Delete</MenuItem>
+                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Attend a Workshop</MenuItem>
+                            </MenuList>
+                        </Menu>
+                    </Stack>
                     <Button size="sm" color="#FF4993" onClick={nextMonth}>
                         <ChevronRightIcon />
                     </Button>
@@ -93,12 +118,13 @@ const DatePicker = ({ minDate, maxDate }) => {
                 <Divider bg="#FF4993" mt={3} />
                 <Box px={5} pt={2} mb={4}>
                     <Stack direction="row" justify="space-between" align="center" mb={2}>
-                        <Stack direction="row" align="center" justify="center">
+                        <Stack direction="row" align="center" justify="center" spacing={1}>
                             <Text fontSize={14} bg="pink.800" borderRadius={10} p={1}>{timestamp}</Text>
                             <Button px={1} pb={0.5} borderRadius={100} size="sm" variant="ghost" _hover={{ bg: "pink.800", cursor: "pointer" }} onClick={handleDateReset}><RepeatClockIcon /></Button>
                         </Stack>
-                        <Stack>
-                            <Text>{selectedDate.toLocaleDateString()}</Text>
+                        <Stack direction="row">
+                            <Text>Selected: </Text>
+                            <Text color="#FF4993">{selectedDate.toLocaleDateString()}</Text>
                         </Stack>
                     </Stack>
                     <Grid templateColumns='repeat(7, 1fr)' gap={2} justifyItems="center">
@@ -143,9 +169,9 @@ const DatePicker = ({ minDate, maxDate }) => {
                     <Collapse in={isOpenConverter} animateOpacity>
                         <Divider bg="#FF4993" />
                         <Stack direction="row" justify="space-between" align="center" color="#FF4993" pl={2} pr={6} mt={2.5}>
-                            <Stack direction="row" justify="center" align="center">
-                                <Button px={1} pb={0.5} borderRadius={10} size="sm" variant="ghost" _hover={{ bg: "pink.800", cursor: "pointer" }} onClick={handleConverterReset}><NotAllowedIcon /></Button>
+                            <Stack direction="row" justify="center" align="center" spacing={0.5}>
                                 <Input bg="whiteAlpha.800" size="sm" color="#525252" my={2} _placeholder={{ color: "#525252" }} placeholder="Convert Epochs" value={converterInputVal} onChange={handleConverterTime} />
+                                <Button px={1} pb={0.5} borderRadius={100} size="sm" variant="ghost" _hover={{ bg: "pink.800", cursor: "pointer" }} onClick={handleConverterReset}><NotAllowedIcon /></Button>
                             </Stack>
                             <Stack direction="row" justify="center" align="center">
                                 <Text fontSize={14}>{new Date(converterTime).toLocaleDateString()} {new Date(converterTime).toLocaleTimeString()}</Text>
