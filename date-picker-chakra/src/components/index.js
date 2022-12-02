@@ -4,7 +4,7 @@ import { monthNames } from '../consts'
 import { getNumberOfDaysInMonth, getSortedDays, range } from '../utils'
 import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowedIcon, ChevronDownIcon } from '@chakra-ui/icons'
 
-const DatePicker = ({ minDate, maxDate }) => {
+const DatePicker = () => {
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
     const [selectedDate, setSelectedDate] = useState(new Date())
