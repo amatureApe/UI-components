@@ -35,8 +35,8 @@ const DatePicker = ({ minDate, maxDate }) => {
         }
     }
 
-    const getTimeFromState = (_day) => {
-        return new Date(currentYear, currentMonth, _day).getTime()
+    const getTimeFromState = (day) => {
+        return new Date(currentYear, currentMonth, day).getTime()
     }
 
     return (
