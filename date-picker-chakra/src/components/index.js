@@ -7,7 +7,6 @@ import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowe
 const DatePicker = ({ minDate, maxDate }) => {
     const [currentMonth, setCurrentMonth] = useState(new Date().getMonth())
     const [currentYear, setCurrentYear] = useState(new Date().getFullYear())
-    const [currentDay, setCurrentDay] = useState(new Date().getDate())
     const [selectedDate, setSelectedDate] = useState(new Date())
     const [timestamp, setTimestamp] = useState(Date.now())
     const [converterTime, setConverterTime] = useState(new Date(Date.now()).toLocaleDateString())
@@ -40,7 +39,6 @@ const DatePicker = ({ minDate, maxDate }) => {
 
     const handleSelection = (event) => {
         let day = event.target.value
-        setCurrentDay(day)
         setSelectedDate(
             new Date(currentYear, currentMonth, day)
         )
@@ -65,11 +63,9 @@ const DatePicker = ({ minDate, maxDate }) => {
         setCurrentYear(new Date().getFullYear())
     }
 
-    const getTimeFromState = (day) => {
-        return new Date(currentYear, currentMonth, day).getTime()
-    }
-
-    // console.log("PING", new Date(converterTime).toLocaleDateString())
+    // const getTimeFromState = (day) => {
+    //     return new Date(currentYear, currentMonth, day).getTime()
+    // }
 
     return (
         <Box borderRadius={10} w={500} bg="rgba(255, 73, 147, 0.2)" p={5}>
