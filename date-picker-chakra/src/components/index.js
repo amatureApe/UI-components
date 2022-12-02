@@ -1,5 +1,5 @@
-import React, { useDebugValue, useState } from 'react'
-import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer, Collapse, Menu, MenuList, MenuItem, MenuButton, useDisclosure } from '@chakra-ui/react'
+import React, { useDebugValue, useState, useEffect } from 'react'
+import { Box, Stack, Input, Text, Heading, Button, Grid, GridItem, Divider, Spacer, Collapse, Menu, MenuList, MenuItem, MenuButton, useDisclosure, Tr } from '@chakra-ui/react'
 import { monthNames } from '../consts'
 import { getNumberOfDaysInMonth, getSortedDays, range } from '../utils'
 import { ChevronLeftIcon, ChevronRightIcon, TimeIcon, RepeatClockIcon, NotAllowedIcon, ChevronDownIcon } from '@chakra-ui/icons'
@@ -12,6 +12,8 @@ const DatePicker = ({ minDate, maxDate }) => {
     const [timestamp, setTimestamp] = useState(Date.now())
     const [converterTime, setConverterTime] = useState(new Date(Date.now()).toLocaleDateString())
     const [converterInputVal, setConverterInputVal] = useState("")
+
+    const TRUE_TIME = Date.now()
 
     const {
         isOpen: isOpenConverter,
@@ -67,7 +69,7 @@ const DatePicker = ({ minDate, maxDate }) => {
         return new Date(currentYear, currentMonth, day).getTime()
     }
 
-    console.log("PING", new Date(converterTime).toLocaleDateString())
+    // console.log("PING", new Date(converterTime).toLocaleDateString())
 
     return (
         <Box borderRadius={10} w={500} bg="rgba(255, 73, 147, 0.2)" p={5}>
@@ -81,24 +83,26 @@ const DatePicker = ({ minDate, maxDate }) => {
                             <MenuButton as={Button} variant="ghost">
                                 <Heading fontSize={28}>{monthNames[currentMonth]}</Heading>
                             </MenuButton>
-                            <MenuList bg="#202023">
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Download</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Create a Copy</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Mark as Draft</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Delete</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Attend a Workshop</MenuItem>
+                            <MenuList bg="#202023" overflowY="scroll" h={300}>
+                                {monthNames.map((month) => (
+                                    <Box>
+                                        <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }} onClick={() => setCurrentMonth(monthNames.indexOf(month))}>{month}</MenuItem>
+                                        <Divider />
+                                    </Box>
+                                ))}
                             </MenuList>
                         </Menu>
                         <Menu>
                             <MenuButton as={Button} variant="ghost">
                                 <Heading fontSize={28}>{currentYear}</Heading>
                             </MenuButton>
-                            <MenuList bg="#202023">
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Download</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Create a Copy</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Mark as Draft</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Delete</MenuItem>
-                                <MenuItem bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }}>Attend a Workshop</MenuItem>
+                            <MenuList bg="#202023" overflowY="scroll" h={300}>
+                                {range(new Date(TRUE_TIME).getFullYear(), new Date(TRUE_TIME).getFullYear() + 100).map((year) => (
+                                    <Box>
+                                        <MenuItem key={year} bg="rgba(255, 73, 147, 0.4)" _hover={{ bg: "#202023" }} onClick={() => { setCurrentYear(year) }}>{year}</MenuItem>
+                                        <Divider />
+                                    </Box>
+                                ))}
                             </MenuList>
                         </Menu>
                     </Stack>
@@ -129,19 +133,21 @@ const DatePicker = ({ minDate, maxDate }) => {
                     </Stack>
                     <Grid templateColumns='repeat(7, 1fr)' gap={2} justifyItems="center">
                         {range(1, getNumberOfDaysInMonth(currentYear, currentMonth) + 1).map((day) => {
-                            const month = currentMonth
                             const year = currentYear
+                            const month = currentMonth
                             return (
                                 <GridItem>
                                     <Button
                                         color="whiteAlpha.900"
                                         bg="#FF4993"
-                                        _focus={{
+                                        isActive={selectedDate.getDate() == day && selectedDate.getMonth() == month && selectedDate.getFullYear() == year ? true : false}
+                                        _active={{
                                             bg: 'pink.800',
                                             transform: 'scale(1.15)',
                                             borderWidth: "1px",
                                             borderColor: '#FF4993',
-                                        }} size="sm" w={10} value={day} onClick={handleSelection}
+                                        }}
+                                        size="sm" w={10} value={day} onClick={handleSelection}
                                     >
                                         {day}
                                     </Button>
