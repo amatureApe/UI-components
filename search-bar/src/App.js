@@ -1,9 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
+import SearchBar from './Components/SearchBar';
+import BookData from './Data.json'
 
 function App() {
   return (
     <div className="App">
+      <SearchBar placeholder="Enter a book name" data={BookData} />
     </div>
   );
 }
